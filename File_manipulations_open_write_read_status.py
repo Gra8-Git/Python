@@ -1,9 +1,8 @@
-import datetime
+
 import time
 import stat
 import os
-currenttime =datetime.datetime.now()
-
+currenttime =time.asctime( time.localtime(time.time()) )
 def filerename(filename, newfilename):
 	os.rename(filename, newfilename)
 def delfile(filename):
@@ -13,7 +12,7 @@ def fileInformation(filename):
 	return filestatus
 def writeTofile(filename, mode, data, time=currenttime):
 	f= open(filename, mode)
-	f.write("[%s] : " % time.strftime("%Y-%m-%d %H:%M"))
+	f.write("[%s] : " % time)
 	f.write("%s\r\n " %data)
 	f.close()
 def readFromfile(filename, mode):
@@ -23,7 +22,7 @@ def readFromfile(filename, mode):
 	return data
 def appendTofile(filename, mode, data, time= currenttime):
 	f= open(filename, mode)
-        f.write("[%s] : " % time.strftime("%Y-%m-%d %H:%M"))
+        f.write("[%s] : " % time)
         f.write("%s\r\n " %data)
         f.close()
 
