@@ -1,2 +1,2 @@
 # Python
-Sources
+Sources for beginners
